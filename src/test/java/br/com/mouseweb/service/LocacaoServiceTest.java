@@ -19,6 +19,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static br.com.mouseweb.matchers.MatchersProprios.ehHoje;
+import static br.com.mouseweb.matchers.MatchersProprios.ehHojeComDiferencaDias;
 import static br.com.mouseweb.utils.DataUtils.*;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -120,6 +122,10 @@ public class LocacaoServiceTest {
         erro.checkThat(locacao.getValor(), is(not(6.0)));
         erro.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
         erro.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+
+        //verificacao 4
+        erro.checkThat(locacao.getDataLocacao(), ehHoje());
+        erro.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
 
     }
 
