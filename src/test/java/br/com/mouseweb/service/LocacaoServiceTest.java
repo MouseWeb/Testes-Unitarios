@@ -101,7 +101,7 @@ public class LocacaoServiceTest {
         List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 1, 5.0));
 
         //acao
-        Locacao locacao = service.alugarFilmeLis(usuario, filmes);
+        Locacao locacao = service.alugarFilmeList(usuario, filmes);
 
         //verificacao
         Assert.assertEquals(5.0, locacao.getValor(), 0.01);
@@ -142,7 +142,7 @@ public class LocacaoServiceTest {
         List<Filme> filmes = Arrays.asList(new Filme("Filme 2", 0, 4.0));
 
         //acao
-        service.alugarFilmeLis(usuario, filmes);
+        service.alugarFilmeList(usuario, filmes);
 
     }
 
@@ -169,7 +169,7 @@ public class LocacaoServiceTest {
 
         //acao
         try {
-            service.alugarFilmeLis(null, filmes);
+            service.alugarFilmeList(null, filmes);
             Assert.fail();
         } catch (LocadoraException e) {
             assertThat(e.getMessage(), is("Usuario vazio"));
@@ -199,7 +199,7 @@ public class LocacaoServiceTest {
         exception.expectMessage("Filme vazio");
 
         //acao
-        service.alugarFilmeLis(usuario, null);
+        service.alugarFilmeList(usuario, null);
     }
 
     @Test
@@ -209,7 +209,7 @@ public class LocacaoServiceTest {
         List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 4.0), new Filme("Filme 2", 2, 4.0), new Filme("Filme 3", 2, 4.0));
 
         //acao
-        Locacao resultado = service.alugarFilmeLis(usuario, filmes);
+        Locacao resultado = service.alugarFilmeList(usuario, filmes);
 
         //verificacao
         assertThat(resultado.getValor(), is(11.0));
@@ -223,7 +223,7 @@ public class LocacaoServiceTest {
                 new Filme("Filme 1", 2, 4.0), new Filme("Filme 2", 2, 4.0), new Filme("Filme 3", 2, 4.0), new Filme("Filme 4", 2, 4.0));
 
         //acao
-        Locacao resultado = service.alugarFilmeLis(usuario, filmes);
+        Locacao resultado = service.alugarFilmeList(usuario, filmes);
 
         //verificacao
         assertThat(resultado.getValor(), is(13.0));
@@ -240,7 +240,7 @@ public class LocacaoServiceTest {
                 new Filme("Filme 5", 2, 4.0));
 
         //acao
-        Locacao resultado = service.alugarFilmeLis(usuario, filmes);
+        Locacao resultado = service.alugarFilmeList(usuario, filmes);
 
         //verificacao
         assertThat(resultado.getValor(), is(14.0));
@@ -257,7 +257,7 @@ public class LocacaoServiceTest {
                 new Filme("Filme 5", 2, 4.0), new Filme("Filme 6", 2, 4.0));
 
         //acao
-        Locacao resultado = service.alugarFilmeLis(usuario, filmes);
+        Locacao resultado = service.alugarFilmeList(usuario, filmes);
 
         //verificacao
         assertThat(resultado.getValor(), is(14.0));
@@ -274,7 +274,7 @@ public class LocacaoServiceTest {
         List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 1, 5.0));
 
         //acao
-        Locacao retorno = service.alugarFilmeLis(usuario, filmes);
+        Locacao retorno = service.alugarFilmeList(usuario, filmes);
 
         //verificacao
         boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);

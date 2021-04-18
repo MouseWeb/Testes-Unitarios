@@ -52,7 +52,7 @@ public class LocacaoService {
 		return locacao;
 	}
 
-	public Locacao alugarFilmeLis(Usuario usuario, List<Filme> filmes) throws LocadoraException, FilmeSemEstoqueException {
+	public Locacao alugarFilmeList(Usuario usuario, List<Filme> filmes) throws LocadoraException, FilmeSemEstoqueException {
 
 		if(usuario == null) {
 			throw new LocadoraException("Usuario vazio");
