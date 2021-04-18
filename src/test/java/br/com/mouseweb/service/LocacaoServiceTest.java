@@ -16,10 +16,7 @@ import buildermaster.BuilderMaster;
 import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -415,6 +412,24 @@ public class LocacaoServiceTest {
         //acao
         service.alugarFilme(usuario, filme);
 
+    }
+
+    @Test
+    public void deveProrrogarUmaLocacao(){
+        //cenario
+        Locacao locacao = umLocacao().agora();
+
+        //acao
+        service.prorrogarLocacao(locacao, 3);
+
+        //verificacao
+        ArgumentCaptor<Locacao> argCapt = ArgumentCaptor.forClass(Locacao.class);
+        Mockito.verify(dao).salvar(argCapt.capture());
+        Locacao locacaoRetornada = argCapt.getValue();
+
+        erro.checkThat(locacaoRetornada.getValor(), is(12.0));
+        erro.checkThat(locacaoRetornada.getDataLocacao(), ehHoje());
+        erro.checkThat(locacaoRetornada.getDataRetorno(), ehHojeComDiferencaDias(3));
     }
 
 }
