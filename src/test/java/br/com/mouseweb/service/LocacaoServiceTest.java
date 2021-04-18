@@ -5,6 +5,7 @@ import br.com.mouseweb.entidades.Locacao;
 import br.com.mouseweb.entidades.Usuario;
 import br.com.mouseweb.exception.FilmeSemEstoqueException;
 import br.com.mouseweb.exception.LocadoraException;
+import br.com.mouseweb.matchers.MatchersProprios;
 import br.com.mouseweb.servicos.LocacaoService;
 
 import br.com.mouseweb.utils.DataUtils;
@@ -277,8 +278,9 @@ public class LocacaoServiceTest {
         Locacao retorno = service.alugarFilmeList(usuario, filmes);
 
         //verificacao
-        boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
-        Assert.assertTrue(ehSegunda);
+        //assertThat(retorno.getDataRetorno(), MatchersProprios.caiEm(Calendar.SUNDAY));
+        assertThat(retorno.getDataRetorno(), MatchersProprios.caiNumaSegunda());
+
     }
 
 }
