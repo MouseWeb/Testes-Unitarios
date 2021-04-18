@@ -11,6 +11,7 @@ import br.com.mouseweb.matchers.MatchersProprios;
 import br.com.mouseweb.servicos.LocacaoService;
 
 import br.com.mouseweb.utils.DataUtils;
+import buildermaster.BuilderMaster;
 import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
@@ -317,6 +318,10 @@ public class LocacaoServiceTest {
         //assertThat(retorno.getDataRetorno(), MatchersProprios.caiEm(Calendar.SUNDAY));
         assertThat(retorno.getDataRetorno(), MatchersProprios.caiNumaSegunda());
 
+    }
+
+    public static void main(String[] args) {
+        new BuilderMaster().gerarCodigoClasse(Locacao.class);
     }
 
 }
