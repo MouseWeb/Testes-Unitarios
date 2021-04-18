@@ -7,6 +7,7 @@ import br.com.mouseweb.entidades.Usuario;
 import br.com.mouseweb.exception.FilmeSemEstoqueException;
 import br.com.mouseweb.exception.LocadoraException;
 import br.com.mouseweb.servicos.LocacaoService;
+import br.com.mouseweb.servicos.SPCService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,8 @@ import static org.junit.Assert.assertThat;
 public class CalculoValorLocacaoTest {
 
     private LocacaoService service;
+    private LocacaoDAO dao;
+    private SPCService spc;
 
     @Parameterized.Parameter
     public List<Filme> filmes;
@@ -39,8 +42,11 @@ public class CalculoValorLocacaoTest {
     @Before
     public void setup(){
         service = new LocacaoService();
-        LocacaoDAO dao = Mockito.mock(LocacaoDAO.class);
+        dao = Mockito.mock(LocacaoDAO.class);
         service.setLocacaoDAO(dao);
+
+        spc = Mockito.mock(SPCService.class);
+        service.setSPCService(spc);
     }
 
     private static Filme filme1 = umFilme().agora();

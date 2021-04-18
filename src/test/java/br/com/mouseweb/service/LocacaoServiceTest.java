@@ -11,6 +11,7 @@ import br.com.mouseweb.exception.LocadoraException;
 import br.com.mouseweb.matchers.MatchersProprios;
 import br.com.mouseweb.servicos.LocacaoService;
 
+import br.com.mouseweb.servicos.SPCService;
 import br.com.mouseweb.utils.DataUtils;
 import buildermaster.BuilderMaster;
 import org.junit.*;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import static br.com.mouseweb.builders.FilmeBuilder.umFilme;
+import static br.com.mouseweb.builders.UsuarioBuilder.umUsuario;
 import static br.com.mouseweb.matchers.MatchersProprios.ehHoje;
 import static br.com.mouseweb.matchers.MatchersProprios.ehHojeComDiferencaDias;
 import static br.com.mouseweb.utils.DataUtils.*;
@@ -32,6 +34,7 @@ import static br.com.mouseweb.utils.DataUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 /* Fast = Executado Rápido
  * Independent =  O teste está independente
@@ -43,6 +46,8 @@ import static org.junit.Assert.assertThat;
 public class LocacaoServiceTest {
 
     private LocacaoService service;
+    private LocacaoDAO dao;
+    private SPCService spc;
 
     @Rule
     public ErrorCollector erro = new ErrorCollector();
@@ -53,8 +58,11 @@ public class LocacaoServiceTest {
     @Before
     public void setup(){
         service = new LocacaoService();
-        LocacaoDAO dao = Mockito.mock(LocacaoDAO.class);
+        dao = Mockito.mock(LocacaoDAO.class);
         service.setLocacaoDAO(dao);
+
+        spc = Mockito.mock(SPCService.class);
+        service.setSPCService(spc);
     }
 
     public Locacao alugarFilme(Usuario usuario, Filme filme) {
@@ -83,7 +91,7 @@ public class LocacaoServiceTest {
         Usuario usuario = new Usuario("Usuario 1");
         Filme filme = new Filme("Filme 1", 2, 5.0);
         //Builder
-        Usuario usuarioBuilder = UsuarioBuilder.umUsuario().agora();
+        Usuario usuarioBuilder = umUsuario().agora();
         //------------------------------------------------------------------------------//
         //acao
         Locacao locacao = service.alugarFilme(usuario, filme);
@@ -130,7 +138,7 @@ public class LocacaoServiceTest {
         List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 1, 5.0));
 
         //Builder
-        Usuario usuarioBuilder = UsuarioBuilder.umUsuario().agora();
+        Usuario usuarioBuilder = umUsuario().agora();
         List<Filme> filmeBuilder = Arrays.asList(umFilme().comValor(5.0).agora());
         //------------------------------------------------------------------------------//
         //acao
@@ -326,6 +334,22 @@ public class LocacaoServiceTest {
 
     public static void main(String[] args) {
         new BuilderMaster().gerarCodigoClasse(Locacao.class);
+    }
+
+    @Test
+    public void naoDeveAlugarFilmeParaNegativadoSPC() throws FilmeSemEstoqueException, LocadoraException{
+        //cenario
+        Usuario usuario = umUsuario().agora();
+        Usuario usuario2 = umUsuario().comNome("Usuario 2").agora();
+        Filme filme = umFilme().agora();
+
+        when(spc.possuiNegativacao(usuario)).thenReturn(true);
+
+        exception.expect(LocadoraException.class);
+        exception.expectMessage("Usuário Negativado");
+
+        //acao
+        service.alugarFilme(usuario, filme);
     }
 
 }
