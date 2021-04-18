@@ -1,7 +1,5 @@
 package br.com.mouseweb.service;
 
-import br.com.mouseweb.builders.FilmeBuilder;
-import br.com.mouseweb.builders.UsuarioBuilder;
 import br.com.mouseweb.dao.LocacaoDAO;
 import br.com.mouseweb.entidades.Filme;
 import br.com.mouseweb.entidades.Locacao;
@@ -9,6 +7,7 @@ import br.com.mouseweb.entidades.Usuario;
 import br.com.mouseweb.exception.FilmeSemEstoqueException;
 import br.com.mouseweb.exception.LocadoraException;
 import br.com.mouseweb.matchers.MatchersProprios;
+import br.com.mouseweb.servicos.EmailService;
 import br.com.mouseweb.servicos.LocacaoService;
 
 import br.com.mouseweb.servicos.SPCService;
@@ -19,13 +18,13 @@ import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import static br.com.mouseweb.builders.FilmeBuilder.umFilme;
+import static br.com.mouseweb.builders.LocacaoBuilder.umLocacao;
 import static br.com.mouseweb.builders.UsuarioBuilder.umUsuario;
 import static br.com.mouseweb.matchers.MatchersProprios.ehHoje;
 import static br.com.mouseweb.matchers.MatchersProprios.ehHojeComDiferencaDias;
@@ -34,7 +33,8 @@ import static br.com.mouseweb.utils.DataUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
 
 /* Fast = Executado Rápido
  * Independent =  O teste está independente
@@ -48,6 +48,7 @@ public class LocacaoServiceTest {
     private LocacaoService service;
     private LocacaoDAO dao;
     private SPCService spc;
+    private EmailService email;
 
     @Rule
     public ErrorCollector erro = new ErrorCollector();
@@ -63,6 +64,9 @@ public class LocacaoServiceTest {
 
         spc = Mockito.mock(SPCService.class);
         service.setSPCService(spc);
+
+        email = Mockito.mock(EmailService.class);
+        service.setEmailService(email);
     }
 
     public Locacao alugarFilme(Usuario usuario, Filme filme) {
@@ -343,13 +347,47 @@ public class LocacaoServiceTest {
         Usuario usuario2 = umUsuario().comNome("Usuario 2").agora();
         Filme filme = umFilme().agora();
 
+        // Informa qual usuário deverá ser retornado a qual é a instância e atribui true
         when(spc.possuiNegativacao(usuario)).thenReturn(true);
-
-        exception.expect(LocadoraException.class);
-        exception.expectMessage("Usuário Negativado");
+        when(spc.possuiNegativacao(Mockito.any(Usuario.class))).thenReturn(true);
 
         //acao
-        service.alugarFilme(usuario, filme);
+        try {
+            service.alugarFilme(usuario, filme);
+            //verificacao
+            Assert.fail();
+        } catch (LocadoraException e) {
+            Assert.assertThat(e.getMessage(), is("Usuário Negativado"));
+        }
+        //verificacao
+        verify(spc).possuiNegativacao(usuario);
+
+    }
+
+    @Test
+    public void deveEnviarEmailParaLocacoesAtrasadas(){
+        //cenario
+        Usuario usuario = umUsuario().agora();
+        Usuario usuario2 = umUsuario().comNome("Usuario em dia").agora();
+        Usuario usuario3 = umUsuario().comNome("Outro atrasado").agora();
+
+        List<Locacao> locacoes = Arrays.asList(
+                umLocacao().atrasada().comUsuario(usuario).agora(),
+                umLocacao().comUsuario(usuario2).agora(),
+                umLocacao().atrasada().comUsuario(usuario3).agora(),
+                umLocacao().atrasada().comUsuario(usuario3).agora());
+
+        when(dao.obterLocacoesPendentes()).thenReturn(locacoes);
+
+        //acao
+        service.notificarAtrasos();
+
+        //verificacao
+        verify(email, times(3)).notificarAtraso(Mockito.any(Usuario.class));
+        verify(email).notificarAtraso(usuario);
+        verify(email, Mockito.atLeastOnce()).notificarAtraso(usuario3);
+        verify(email, never()).notificarAtraso(usuario2);
+        verifyNoMoreInteractions(email);
     }
 
 }
