@@ -1,5 +1,7 @@
 package br.com.mouseweb.service;
 
+import br.com.mouseweb.builders.FilmeBuilder;
+import br.com.mouseweb.builders.UsuarioBuilder;
 import br.com.mouseweb.entidades.Filme;
 import br.com.mouseweb.entidades.Locacao;
 import br.com.mouseweb.entidades.Usuario;
@@ -19,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static br.com.mouseweb.builders.FilmeBuilder.umFilme;
 import static br.com.mouseweb.matchers.MatchersProprios.ehHoje;
 import static br.com.mouseweb.matchers.MatchersProprios.ehHojeComDiferencaDias;
 import static br.com.mouseweb.utils.DataUtils.*;
@@ -74,14 +77,22 @@ public class LocacaoServiceTest {
         //cenario
         Usuario usuario = new Usuario("Usuario 1");
         Filme filme = new Filme("Filme 1", 2, 5.0);
-
+        //Builder
+        Usuario usuarioBuilder = UsuarioBuilder.umUsuario().agora();
+        //------------------------------------------------------------------------------//
         //acao
         Locacao locacao = service.alugarFilme(usuario, filme);
-
+        //Builder
+        Locacao locacao1 = service.alugarFilme(usuarioBuilder, filme);
+        //------------------------------------------------------------------------------//
         //verificacao
         Assert.assertEquals(5.0, locacao.getValor(), 0.01);
         Assert.assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
         Assert.assertTrue(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)));
+
+        Assert.assertEquals(5.0, locacao1.getValor(), 0.01);
+        Assert.assertTrue(isMesmaData(locacao1.getDataLocacao(), new Date()));
+        Assert.assertTrue(isMesmaData(locacao1.getDataRetorno(), obterDataComDiferencaDias(1)));
 
         //verificacao 2
         assertThat(locacao.getValor(), is(equalTo(5.0)));
@@ -89,11 +100,21 @@ public class LocacaoServiceTest {
         assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
         assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 
+        assertThat(locacao1.getValor(), is(equalTo(5.0)));
+        assertThat(locacao1.getValor(), is(not(6.0)));
+        assertThat(isMesmaData(locacao1.getDataLocacao(), new Date()), is(true));
+        assertThat(isMesmaData(locacao1.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+
         //verificacao 3
         erro.checkThat(locacao.getValor(), is(equalTo(5.0)));
         erro.checkThat(locacao.getValor(), is(not(6.0)));
         erro.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
         erro.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+
+        erro.checkThat(locacao1.getValor(), is(equalTo(5.0)));
+        erro.checkThat(locacao1.getValor(), is(not(6.0)));
+        erro.checkThat(isMesmaData(locacao1.getDataLocacao(), new Date()), is(true));
+        erro.checkThat(isMesmaData(locacao1.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 
     }
 
@@ -103,13 +124,22 @@ public class LocacaoServiceTest {
         Usuario usuario = new Usuario("Usuario 1");
         List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 1, 5.0));
 
+        //Builder
+        Usuario usuarioBuilder = UsuarioBuilder.umUsuario().agora();
+        List<Filme> filmeBuilder = Arrays.asList(umFilme().comValor(5.0).agora());
+        //------------------------------------------------------------------------------//
         //acao
         Locacao locacao = service.alugarFilmeList(usuario, filmes);
-
+        Locacao locacao1 = service.alugarFilmeList(usuarioBuilder, filmeBuilder);
+        //------------------------------------------------------------------------------//
         //verificacao
         Assert.assertEquals(5.0, locacao.getValor(), 0.01);
         Assert.assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
         Assert.assertTrue(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)));
+
+        Assert.assertEquals(5.0, locacao1.getValor(), 0.01);
+        Assert.assertTrue(isMesmaData(locacao1.getDataLocacao(), new Date()));
+        Assert.assertTrue(isMesmaData(locacao1.getDataRetorno(), obterDataComDiferencaDias(1)));
 
         //verificacao 2
         assertThat(locacao.getValor(), is(equalTo(5.0)));
@@ -146,7 +176,7 @@ public class LocacaoServiceTest {
     public void naoDeveAlugarFilmeSemEstoqueList() throws Exception{
         //cenario
         Usuario usuario = new Usuario("Usuario 1");
-        List<Filme> filmes = Arrays.asList(new Filme("Filme 2", 0, 4.0));
+        List<Filme> filmes = Arrays.asList(umFilme().semEstoque().agora());
 
         //acao
         service.alugarFilmeList(usuario, filmes);
