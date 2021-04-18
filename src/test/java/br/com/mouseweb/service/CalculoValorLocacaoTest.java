@@ -12,7 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +28,10 @@ import static org.junit.Assert.assertThat;
 public class CalculoValorLocacaoTest {
 
     private LocacaoService service;
+
+    @Mock
     private LocacaoDAO dao;
+    @Mock
     private SPCService spc;
 
     @Parameterized.Parameter
@@ -41,12 +45,15 @@ public class CalculoValorLocacaoTest {
 
     @Before
     public void setup(){
-        service = new LocacaoService();
+        MockitoAnnotations.initMocks(this);
+
+        // Com anotação é desnecessário instância manualmente
+        /*service = new LocacaoService();
         dao = Mockito.mock(LocacaoDAO.class);
         service.setLocacaoDAO(dao);
 
         spc = Mockito.mock(SPCService.class);
-        service.setSPCService(spc);
+        service.setSPCService(spc);*/
     }
 
     private static Filme filme1 = umFilme().agora();
