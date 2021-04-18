@@ -3,9 +3,10 @@ package br.com.mouseweb.service;
 import br.com.mouseweb.entidades.Filme;
 import br.com.mouseweb.entidades.Locacao;
 import br.com.mouseweb.entidades.Usuario;
-import br.com.mouseweb.utils.DataUtils;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ErrorCollector;
 
 import java.util.Date;
 
@@ -22,6 +23,9 @@ import static org.junit.Assert.assertThat;
  */
 
 public class LocacaoServiceTest {
+
+    @Rule
+    public ErrorCollector erro = new ErrorCollector();
 
     public Locacao alugarFilme(Usuario usuario, Filme filme) {
         Locacao locacao = new Locacao();
@@ -42,7 +46,7 @@ public class LocacaoServiceTest {
     }
 
     @Test
-    public void teste() {
+    public void testeLocacao() {
         //cenario
         br.com.mouseweb.servicos.LocacaoService service = new br.com.mouseweb.servicos.LocacaoService();
         Usuario usuario = new Usuario("Usuario 1");
@@ -61,6 +65,12 @@ public class LocacaoServiceTest {
         assertThat(locacao.getValor(), is(not(6.0)));
         assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
         assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+
+        //verificacao 3
+        erro.checkThat(locacao.getValor(), is(equalTo(5.0)));
+        erro.checkThat(locacao.getValor(), is(not(6.0)));
+        erro.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
+        erro.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 
     }
 
