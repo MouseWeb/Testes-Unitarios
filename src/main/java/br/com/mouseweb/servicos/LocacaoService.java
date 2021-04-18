@@ -1,5 +1,6 @@
 package br.com.mouseweb.servicos;
 
+import br.com.mouseweb.dao.LocacaoDAO;
 import br.com.mouseweb.entidades.Filme;
 import br.com.mouseweb.entidades.Locacao;
 import br.com.mouseweb.entidades.Usuario;
@@ -20,6 +21,8 @@ import static br.com.mouseweb.utils.DataUtils.adicionarDias;
  * Timely = O teste criado no momento correto
  */
 public class LocacaoService {
+
+	private LocacaoDAO dao;
 	
 	public Locacao alugarFilme(Usuario usuario, Filme filme) throws LocadoraException, FilmeSemEstoqueException {
 
@@ -47,7 +50,7 @@ public class LocacaoService {
 		locacao.setDataRetorno(dataEntrega);
 
 		//Salvando a locacao...
-		//TODO adicionar método para salvar
+		dao.salvar(locacao);
 
 		return locacao;
 	}
@@ -94,6 +97,9 @@ public class LocacaoService {
 		}
 		locacao.setDataRetorno(dataEntrega);
 
+		//Salvando a locacao...
+		dao.salvar(locacao);
+
 		return locacao;
 	}
 	
@@ -110,6 +116,10 @@ public class LocacaoService {
 		System.out.println(locacao.getValor() == 5.0);
 		System.out.println(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
 		System.out.println(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
+	}
+
+	public void setLocacaoDAO(LocacaoDAO dao) {
+		this.dao = dao;
 	}
 
 }

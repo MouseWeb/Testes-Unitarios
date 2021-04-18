@@ -2,6 +2,7 @@ package br.com.mouseweb.service;
 
 import br.com.mouseweb.builders.FilmeBuilder;
 import br.com.mouseweb.builders.UsuarioBuilder;
+import br.com.mouseweb.dao.LocacaoDAO;
 import br.com.mouseweb.entidades.Filme;
 import br.com.mouseweb.entidades.Locacao;
 import br.com.mouseweb.entidades.Usuario;
@@ -15,6 +16,7 @@ import buildermaster.BuilderMaster;
 import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -51,6 +53,8 @@ public class LocacaoServiceTest {
     @Before
     public void setup(){
         service = new LocacaoService();
+        LocacaoDAO dao = Mockito.mock(LocacaoDAO.class);
+        service.setLocacaoDAO(dao);
     }
 
     public Locacao alugarFilme(Usuario usuario, Filme filme) {
