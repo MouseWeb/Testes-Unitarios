@@ -7,6 +7,8 @@ import java.util.Date;
 import br.com.mouseweb.entidades.Filme;
 import br.com.mouseweb.entidades.Locacao;
 import br.com.mouseweb.entidades.Usuario;
+import br.com.mouseweb.exception.FilmeSemEstoqueException;
+import br.com.mouseweb.exception.LocadoraException;
 import br.com.mouseweb.utils.DataUtils;
 
 /* Fast = Executado Rápido
@@ -17,7 +19,20 @@ import br.com.mouseweb.utils.DataUtils;
  */
 public class LocacaoService {
 	
-	public Locacao alugarFilme(Usuario usuario, Filme filme) {
+	public Locacao alugarFilme(Usuario usuario, Filme filme) throws LocadoraException, FilmeSemEstoqueException {
+
+		if(usuario == null) {
+			throw new LocadoraException("Usuario vazio");
+		}
+
+		if(filme == null) {
+			throw new LocadoraException("Filme vazio");
+		}
+
+		if(filme.getEstoque() == 0) {
+			throw new FilmeSemEstoqueException();
+		}
+
 		Locacao locacao = new Locacao();
 		locacao.setFilme(filme);
 		locacao.setUsuario(usuario);
@@ -35,7 +50,7 @@ public class LocacaoService {
 		return locacao;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		//cenario
 		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
@@ -43,7 +58,7 @@ public class LocacaoService {
 		
 		//acao
 		Locacao locacao = service.alugarFilme(usuario, filme);
-		
+
 		//verificacao
 		System.out.println(locacao.getValor() == 5.0);
 		System.out.println(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
