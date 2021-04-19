@@ -12,16 +12,16 @@ import br.com.mouseweb.servicos.LocacaoService;
 
 import br.com.mouseweb.servicos.SPCService;
 import br.com.mouseweb.utils.DataUtils;
-import buildermaster.BuilderMaster;
+//import buildermaster.BuilderMaster;
 import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 import org.mockito.*;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
 
 import static br.com.mouseweb.builders.FilmeBuilder.umFilme;
 import static br.com.mouseweb.builders.LocacaoBuilder.umLocacao;
@@ -343,9 +343,9 @@ public class LocacaoServiceTest {
 
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         new BuilderMaster().gerarCodigoClasse(Locacao.class);
-    }
+    }*/
 
     @Test
     public void naoDeveAlugarFilmeParaNegativadoSPC() throws Exception {
