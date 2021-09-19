@@ -6,17 +6,17 @@
   1 – Teste Unitário<br>
     Teste da menor parte testável de um programa.
     No teste unitário os módulos são testados separadamente. Geralmente isolamos a classe que estamos testando e simulamos o comportamento das dependências.
-    Um método de uma Class é a menor parte testável.
+    Um método de uma Class é a menor parte testável.<br>
     Isolamos a Class que estamos testando e verificamos o comportamento das dependências.
     Simulando o comportamento da Class como outras Class.
 
   2 – Teste de Integração<br>
     É aquele que testa a integração entre duas partes do seu sistema. Testes que estão verificando se suas classes se comunicam bem com serviços web, escrevem arquivos texto, mandam mensagens via socket são considerados testes de integração.
-    Teste de comunicação com banco de dados por exemplo.
-    Elementos necessários em um teste:
-    Cenário – criar um cenário de teste, montar o cenário onde irá ocorrer o teste.
-    Execução – executar o teste em si
-    Verificações – ver se o teste ocorreu de forma esperado
+    Teste de comunicação com banco de dados por exemplo.<br>
+    Elementos necessários em um teste:<br>
+  <b>Cenário</b> – criar um cenário de teste, montar o cenário onde irá ocorrer o teste.<br>
+  <b>Execução</b> – executar o teste em si<br>
+  <b>Verificações</b> – ver se o teste ocorreu de forma esperado<br>
 
   TDD – Desenvolvimento orientado por testes.
   Fluxo do TDD:
